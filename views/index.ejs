@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"
+        integrity="sha384-KAZ4DtjNhLChOB/hxXuKqhMLYvx3b5MlT55xPEiNmREKRzeEm+RVPlTnAn0ajQNs"
+        crossorigin="anonymous"></script>
+</head>
+<style>
+    #chat{
+        max-height: 500px;
+        min-height: 500px;
+        background-color: aliceblue;
+        overflow-y: scroll;
+    }
+</style>
+<body class="container">
+    <h1>Chat - Maluju</h1>
+    <div id="chat"></div>
+    <input type="text" name="msg" id="msg" class="form-control" placeholder="msg.."> <br>
+    <input type="text" name="username" id="username" class="form-control">
+    <button class="btn btn-primary btn-lg btn-block" onclick="enviar()">Enviar</button>
+
+</body>
+<script>
+    const socket = io("http://localhost:3000");
+
+    socket.on("disconnect", () => console.log("Desconectado - Bye, Bye!!!"));
+
+    socket.on("showMsg", (data) => {
+        const chat = document.getElementById("chat");
+        const p = document.createElement("p");
+        p.innerHTML = data.username + ": " + data.msg;
+        chat.append(p);
+    });
+
+    function enviar() {
+        const msgField = document.getElementById("msg");
+        const userNameField = document.getElementById("username");
+
+        const msg = msgField.value;
+        const username = userNameField.value;
+
+        socket.emit("msg", { msg, username });
+    }
+
+</script>
+
+</html>
